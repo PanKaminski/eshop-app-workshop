@@ -1,7 +1,43 @@
 ﻿@page "/item/{itemId:int}"
 
+@inject CatalogService CatalogService
+@inject IProductImageUrlProvider ProductImages
+@inject NavigationManager Navigation
 
+<PageTitle>Northern Mountains</PageTitle>
+
+@if (catalogItem is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <SectionContent SectionName="page-header-title">@catalogItem.Name</SectionContent>
+    <SectionContent SectionName="page-header-subtitle">@catalogItem.CatalogBrand.Brand</SectionContent>
+
+    <div class="item-details">
+       <img alt="@catalogItem.Name" src='@ProductImages.GetProductImageUrl(catalogItem)' />
+       <span class='description'>
+           @catalogItem.Description
+           <div class="brand">Brand: <b>@catalogItem.CatalogBrand.Brand</b></div>
+       </span>
+    </div>
+
+}
 
 @code {
-    
+    [Parameter]
+    public int ItemId { get; set; }
+
+    CatalogItem? catalogItem;
+
+    protected override async Task OnInitializedAsync()
+    {
+        catalogItem = await CatalogService.GetCatalogItemDetails(ItemId);
+
+        if (catalogItem is null)
+        {
+            Navigation.NavigateTo("/error");
+        }
+    }
 }

@@ -19,7 +19,8 @@ var catalogApi = builder.AddProject<Catalog_API>("catalog-api")
     .WithReference(catalogDb);
 
 // Apps
-
+builder.AddProject<WebApp>("webapp")
+    .WithReference(catalogApi);
 
 
 // Inject assigned URLs for Catalog API
